@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mandeep Jaglan — AI &amp; ML Engineer</title>
+<meta name="description" content="Mandeep Jaglan — AI & ML engineer specializing in video processing pipelines, computer vision, NLP/RAG systems, and MLOps infrastructure on GCP.">
+<style>
+  :root {
+    --bg: #0b1120;
+    --bg-soft: #111a2e;
+    --card: #16213b;
+    --border: #24304d;
+    --text: #dbe4f5;
+    --muted: #8b9bbd;
+    --accent: #5eead4;
+    --accent-dim: rgba(94, 234, 212, 0.12);
+    --heading: #f1f5fd;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent); color: #06281f; }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(11, 17, 32, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  nav .logo { font-weight: 700; color: var(--heading); text-decoration: none; letter-spacing: 0.5px; }
+  nav .logo span { color: var(--accent); }
+  nav ul { display: flex; gap: 26px; list-style: none; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 0.92rem; transition: color .15s; }
+  nav a:hover { color: var(--accent); }
+
+  header.hero { padding: 96px 0 72px; }
+  .hero .kicker { color: var(--accent); font-size: 0.95rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+  .hero h1 { color: var(--heading); font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1.12; margin: 12px 0 6px; }
+  .hero h2 { color: var(--muted); font-size: clamp(1.2rem, 3.5vw, 1.7rem); font-weight: 500; margin-bottom: 22px; }
+  .hero p.summary { max-width: 680px; color: var(--text); font-size: 1.02rem; }
+  .hero .links { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 14px; }
+  .btn {
+    display: inline-block; padding: 10px 20px; border-radius: 8px;
+    text-decoration: none; font-size: 0.95rem; font-weight: 600;
+    border: 1px solid var(--accent); transition: background .15s, transform .15s;
+  }
+  .btn.primary { background: var(--accent); color: #06281f; }
+  .btn.primary:hover { transform: translateY(-2px); }
+  .btn.ghost { color: var(--accent); }
+  .btn.ghost:hover { background: var(--accent-dim); }
+
+  section { padding: 56px 0; }
+  section h3 {
+    color: var(--heading); font-size: 1.5rem; margin-bottom: 28px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  section h3::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .num { color: var(--accent); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 1.05rem; }
+
+  .job { margin-bottom: 40px; }
+  .job:last-child { margin-bottom: 0; }
+  .job .head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px; }
+  .job h4 { color: var(--heading); font-size: 1.12rem; }
+  .job h4 .co { color: var(--accent); }
+  .job .dates { color: var(--muted); font-size: 0.88rem; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  .job .sub { color: var(--accent); font-size: 0.95rem; font-weight: 600; margin: 14px 0 6px; }
+  .job ul { list-style: none; margin-top: 8px; }
+  .job li { position: relative; padding-left: 22px; margin-bottom: 8px; color: var(--text); font-size: 0.96rem; }
+  .job li::before { content: "▸"; position: absolute; left: 0; color: var(--accent); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px; display: flex; flex-direction: column;
+    transition: transform .15s, border-color .15s;
+  }
+  .card:hover { transform: translateY(-4px); border-color: var(--accent); }
+  .card h4 { color: var(--heading); font-size: 1.05rem; margin-bottom: 4px; }
+  .card .tag { color: var(--accent); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 10px; }
+  .card p { color: var(--muted); font-size: 0.92rem; flex: 1; }
+  .card a.cardlink { color: var(--accent); text-decoration: none; font-size: 0.88rem; font-weight: 600; margin-top: 14px; }
+  .card a.cardlink:hover { text-decoration: underline; }
+
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+  .skill-group { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+  .skill-group h4 { color: var(--accent); font-size: 0.82rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    background: var(--accent-dim); color: var(--text); border: 1px solid var(--border);
+    border-radius: 999px; padding: 3px 12px; font-size: 0.83rem;
+  }
+
+  .edu-cert { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 640px) { .edu-cert { grid-template-columns: 1fr; } nav ul { display: none; } }
+  .panel { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; padding: 22px; }
+  .panel h4 { color: var(--heading); margin-bottom: 8px; }
+  .panel p, .panel li { color: var(--muted); font-size: 0.94rem; }
+  .panel ul { list-style: none; }
+  .panel li { padding-left: 18px; position: relative; margin-bottom: 6px; }
+  .panel li::before { content: "▸"; position: absolute; left: 0; color: var(--accent); }
+
+  footer { border-top: 1px solid var(--border); padding: 40px 0 48px; text-align: center; }
+  footer p { color: var(--muted); font-size: 0.9rem; }
+  footer .contact-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 22px; margin-bottom: 16px; }
+  footer .contact-links a { color: var(--accent); text-decoration: none; font-size: 0.95rem; }
+  footer .contact-links a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#top">MJ<span>.</span></a>
+    <ul>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <p class="kicker">Hi, my name is</p>
+    <h1>Mandeep Jaglan.</h1>
+    <h2>AI &amp; ML Engineer — video pipelines, computer vision &amp; MLOps.</h2>
+    <p class="summary">
+      AI &amp; ML engineer with 4+ years of experience across data analytics, NLP pipelines,
+      computer vision systems, and MLOps infrastructure. I build end-to-end video processing
+      pipelines, RAG-based SQL intent systems, OCR and ReID workflows, and scalable ETL
+      infrastructure on GCP. Published author of two open-source Python packages on PyPI.
+    </p>
+    <div class="links">
+      <a class="btn primary" href="mailto:mandeepjaglan04@gmail.com">Get in touch</a>
+      <a class="btn ghost" href="https://github.com/Mandeep0402" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn ghost" href="https://linkedin.com/in/mandeep04/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="experience">
+    <h3><span class="num">01.</span> Work Experience</h3>
+
+    <div class="job">
+      <div class="head">
+        <h4>AI Infrastructure Engineer · <span class="co">Streamingo.ai</span></h4>
+        <span class="dates">Oct 2024 — Present</span>
+      </div>
+      <p class="sub">Video Processing &amp; ML Infrastructure</p>
+      <ul>
+        <li>Built a RabbitMQ + Redis based cron pipeline ("fizzing") to orchestrate VLM inference on 2,000–4,000 videos per day, generating structured insights and result sheets.</li>
+        <li>Reduced end-to-end pipeline runtime from ~1.5 days of manual processing to under 4 hours via fully automated parallel execution across 7–8 GPUs on 2–3 machines simultaneously.</li>
+        <li>Developed GCS video management scripts for merging, cutting, and preprocessing timestamped video segments prior to inference.</li>
+        <li>Built an end-to-end Jenkins CI/CD pipeline — from video recording through VLM inference to results delivery — with step-wise email notifications and queue polling.</li>
+        <li>Engineered supporting Jenkins jobs: abort/delete stuck queue items, GCS upload/download, dynamic YML generation for Docker startup based on machine type and available GPUs, and data upload to an analytics dashboard.</li>
+      </ul>
+      <p class="sub">Basketball Minimap Pipeline (Computer Vision)</p>
+      <ul>
+        <li>Designed and built a multi-stage CV pipeline transforming basketball broadcast video into top-down 2D minimap overlays using YOLOv9/v11, SAM 2, BoxMOT, and homography transformation — from unusable prototype to production-ready pilot.</li>
+        <li>Implemented Global Track Association (GTA) to maintain consistent player identities across scenes and occlusions.</li>
+        <li>Built team ReID using KMeansConstrained on HSV histograms; jersey OCR pipeline using FSRCNN super-resolution cross-validated against substitution logs.</li>
+        <li>Applied bidirectional Kalman filtering on court keypoints and linear interpolation of player tracks (up to 45-frame gaps) for smooth minimap rendering.</li>
+        <li>Produced analytics output: shot/turnover location maps, assist arrows, player marking analysis, Gaussian heatmaps, and per-player speed/distance tracking.</li>
+        <li>Integrated a DeepLabel review loop for high-accuracy labeling; designed a SAM 2.1 targeted labeling system to reduce manual effort on future iterations.</li>
+      </ul>
+      <p class="sub">NLP &amp; Conversation Analytics</p>
+      <ul>
+        <li>Built an NLP → intent → BigQuery SQL pipeline for querying fizzing result sheets, with schema-aware prompt engineering, pre/post-processing, and automated chart and insight generation.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="head">
+        <h4>SDE 2 – Machine Learning · <span class="co">Nanonets (via Crewscale)</span></h4>
+        <span class="dates">Mar 2024 — Sep 2024</span>
+      </div>
+      <ul>
+        <li>Improved OCR accuracy to 95%+ across 10+ client datasets by optimising LLM configuration, prompt engineering, and building Python pre/post-processing scripts.</li>
+        <li>Fine-tuned a GPT-3 based model for named entity recognition, increasing name identification accuracy by 35%.</li>
+        <li>Automated data workflows using the Nanonets API and AWS S3 to handle 10 TB+ of data efficiently.</li>
+        <li>Built an NLP-driven recruitment search tool (beanbag.ai) converting natural language queries to Elasticsearch and SQL via the Claude API, with PDL person API integration.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="head">
+        <h4>Associate Data Analyst · <span class="co">Comscore</span></h4>
+        <span class="dates">Jan 2022 — Feb 2024</span>
+      </div>
+      <ul>
+        <li>Built a Facebook Ads data retrieval solution using APIs and web scraping, reducing processing time by 86%.</li>
+        <li>Wrote scripts to collect and filter raw panel data from Hadoop, enabling access to 36+ TB of unstructured data.</li>
+        <li>Automated data analysis and reporting with Python, SQL, and Snowflake; created and debugged 100+ SSRS reports.</li>
+        <li>Developed a PySpark logistic regression model predicting panelist churn, improving prediction accuracy by 25%.</li>
+        <li>Built an ML clustering solution to categorize users by web activity, informing UX and marketing strategies.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="projects">
+    <h3><span class="num">02.</span> Projects</h3>
+    <div class="grid">
+      <div class="card">
+        <p class="tag">Open Source · PyPI</p>
+        <h4>VideoProcToolkit</h4>
+        <p>Python library for video download, multi-backend frame extraction (FFmpeg/OpenCV/Decord), trimming, concatenation, FPS/resolution conversion, thumbnails, and metadata.</p>
+        <a class="cardlink" href="https://pypi.org/project/VideoProcToolkit/" target="_blank" rel="noopener">View on PyPI →</a>
+      </div>
+      <div class="card">
+        <p class="tag">Open Source · PyPI</p>
+        <h4>basketball_datakit</h4>
+        <p>NBA/NCAA data toolkit: play-by-play, box scores, event classification, lineup tracking, ESPN scraper fallback, and name normalization. (v0.2.3)</p>
+        <a class="cardlink" href="https://pypi.org/project/basketball-datakit/" target="_blank" rel="noopener">View on PyPI →</a>
+      </div>
+      <div class="card">
+        <p class="tag">NLP · LLM</p>
+        <h4>Recruitment Search Automation — beanbag.ai</h4>
+        <p>NLP query-to-Elasticsearch/SQL pipeline for recruiter automation, integrated with the PDL person API via the Claude API.</p>
+      </div>
+      <div class="card">
+        <p class="tag">Machine Learning</p>
+        <h4>Panelist Churn Prediction — Comscore</h4>
+        <p>PySpark logistic regression model improving churn prediction accuracy by 25%, built on Hadoop and Snowflake.</p>
+      </div>
+      <div class="card">
+        <p class="tag">Machine Learning</p>
+        <h4>IPL Winner Prediction</h4>
+        <p>Random Forest model (80% accuracy) for IPL match outcome prediction with full data analysis and evaluation.</p>
+        <a class="cardlink" href="https://github.com/Mandeep0402/ipl_Prediction" target="_blank" rel="noopener">View on GitHub →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <h3><span class="num">03.</span> Skills</h3>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h4>Languages</h4>
+        <div class="chips"><span class="chip">Python</span><span class="chip">SQL</span><span class="chip">PySpark</span><span class="chip">C/C++</span><span class="chip">Shell Scripting</span></div>
+      </div>
+      <div class="skill-group">
+        <h4>Data &amp; Cloud</h4>
+        <div class="chips"><span class="chip">BigQuery</span><span class="chip">GCP/GCS</span><span class="chip">AWS S3</span><span class="chip">Snowflake</span><span class="chip">Hadoop</span><span class="chip">Hive</span><span class="chip">Docker</span></div>
+      </div>
+      <div class="skill-group">
+        <h4>MLOps &amp; Infra</h4>
+        <div class="chips"><span class="chip">Jenkins CI/CD</span><span class="chip">RabbitMQ</span><span class="chip">Redis</span><span class="chip">ETL Pipelines</span></div>
+      </div>
+      <div class="skill-group">
+        <h4>CV &amp; ML</h4>
+        <div class="chips"><span class="chip">YOLOv9/v11</span><span class="chip">SAM 2</span><span class="chip">BoxMOT</span><span class="chip">Homography</span><span class="chip">OCR</span><span class="chip">ReID</span><span class="chip">Kalman Filter</span></div>
+      </div>
+      <div class="skill-group">
+        <h4>NLP &amp; LLM</h4>
+        <div class="chips"><span class="chip">RAG Pipelines</span><span class="chip">Prompt Engineering</span><span class="chip">LLM Fine-tuning</span><span class="chip">Claude API</span></div>
+      </div>
+      <div class="skill-group">
+        <h4>Libraries &amp; Tools</h4>
+        <div class="chips"><span class="chip">Pandas</span><span class="chip">NumPy</span><span class="chip">Scikit-learn</span><span class="chip">TensorFlow</span><span class="chip">FFmpeg</span><span class="chip">OpenCV</span><span class="chip">Git</span><span class="chip">Linux</span><span class="chip">Power BI</span><span class="chip">SSRS</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="education">
+    <h3><span class="num">04.</span> Education &amp; Certifications</h3>
+    <div class="edu-cert">
+      <div class="panel">
+        <h4>B.Tech — Computer Science &amp; Engineering</h4>
+        <p>IIIT Bhagalpur · 2018 – 2022</p>
+      </div>
+      <div class="panel">
+        <h4>Certifications</h4>
+        <ul>
+          <li>SQL for Data Science — Coursera</li>
+          <li>Algorithmic Toolbox — Coursera</li>
+          <li>GCP Cloud Engineering &amp; ML — Qwiklabs</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="extracurricular">
+    <h3><span class="num">05.</span> Beyond Work</h3>
+    <div class="panel">
+      <ul>
+        <li>Mentored 5 interns in data validation and quality control</li>
+        <li>Coordinated Google DSC AI/ML Club</li>
+        <li>Led team at Smart India Hackathon (Android app)</li>
+        <li>Managed programming community for GeeksforGeeks events</li>
+        <li>NSS volunteer — education for underprivileged children</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="contact-links">
+      <a href="mailto:mandeepjaglan04@gmail.com">mandeepjaglan04@gmail.com</a>
+      <a href="https://github.com/Mandeep0402" target="_blank" rel="noopener">github.com/Mandeep0402</a>
+      <a href="https://linkedin.com/in/mandeep04/" target="_blank" rel="noopener">linkedin.com/in/mandeep04</a>
+    </div>
+    <p>© 2026 Mandeep Jaglan · Built with plain HTML &amp; CSS, hosted on GitHub Pages</p>
+  </div>
+</footer>
+
+</body>
+</html>
