@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Games — Mandeep Jaglan</title>
+<meta name="description" content="Four tiny Three.js arcade games: Star Catcher, Asteroid Shooter, Neon Dodger, Cube Smash. Mobile-friendly, no install.">
+<style>
+  :root{
+    --bg:#0b1120; --card:#16213b; --border:#24304d;
+    --text:#dbe4f5; --muted:#8b9bbd; --accent:#5eead4; --heading:#f1f5fd;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px}
+  header{padding:72px 0 24px;text-align:center}
+  header .kicker{color:var(--accent);font-size:.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+  header h1{color:var(--heading);font-size:clamp(2rem,6vw,3rem);margin:10px 0 8px}
+  header p{color:var(--muted);max-width:620px;margin:0 auto}
+  header a{color:var(--accent);text-decoration:none}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;padding:36px 0 20px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:transform .15s,border-color .15s;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);border-color:var(--accent)}
+  .thumb{height:150px;display:grid;place-items:center;font-size:56px;position:relative;overflow:hidden}
+  .thumb small{position:absolute;bottom:8px;right:12px;font-size:.7rem;color:rgba(255,255,255,.75);letter-spacing:1px}
+  .t1{background:linear-gradient(135deg,#1b2a4a,#0e5a4d)}
+  .t2{background:linear-gradient(135deg,#2a1b4a,#5a0e3a)}
+  .t3{background:linear-gradient(135deg,#0a0a18,#123a6d)}
+  .t4{background:linear-gradient(135deg,#3a2a0a,#0e5a2a)}
+  .body{padding:20px 22px;display:flex;flex-direction:column;flex:1}
+  .body h2{color:var(--heading);font-size:1.15rem;margin-bottom:6px}
+  .body p{color:var(--muted);font-size:.92rem;flex:1}
+  .body .controls{color:var(--muted);font-size:.8rem;margin-top:10px}
+  .play{display:inline-block;margin-top:14px;padding:10px 18px;border-radius:8px;background:var(--accent);color:#06281f;font-weight:700;text-decoration:none;text-align:center}
+  footer{text-align:center;color:var(--muted);font-size:.85rem;padding:28px 0 48px}
+  footer a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Three.js Arcade</div>
+    <h1>Mini Games</h1>
+    <p>Four tiny 3D arcade games, each in a single HTML file. Mobile + desktop friendly, no install, no build step. <a href="../">← back to homepage</a></p>
+  </header>
+  <div class="grid">
+    <div class="card">
+      <div class="thumb t1">⭐<small>3D · CATCH</small></div>
+      <div class="body">
+        <h2>Star Catcher</h2>
+        <p>Slide the basket and catch falling stars. Dodge the bombs, build a combo, chase your best score.</p>
+        <div class="controls">Controls: drag / arrow keys</div>
+        <a class="play" href="./star-catcher/">Play Star Catcher</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="thumb t2">🚀<small>3D · SHOOTER</small></div>
+      <div class="body">
+        <h2>Asteroid Shooter</h2>
+        <p>Pilot a ship, auto-fire at incoming asteroids. Survive the waves — three hits and you're done.</p>
+        <div class="controls">Controls: drag / WASD / arrows</div>
+        <a class="play" href="./asteroid-shooter/">Play Asteroid Shooter</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="thumb t3">🟪<small>3D · RUNNER</small></div>
+      <div class="body">
+        <h2>Neon Dodger</h2>
+        <p>Endless neon runner. Switch lanes, jump barriers, grab coins. Speed keeps rising.</p>
+        <div class="controls">Controls: tap sides / arrows, Space to jump</div>
+        <a class="play" href="./neon-dodger/">Play Neon Dodger</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="thumb t4">🔨<small>3D · WHACK</small></div>
+      <div class="body">
+        <h2>Cube Smash</h2>
+        <p>Whack-a-cube in 3D. Smash green cubes, grab gold, never touch red. 60 seconds on the clock.</p>
+        <div class="controls">Controls: tap / click the cubes</div>
+        <a class="play" href="./cube-smash/">Play Cube Smash</a>
+      </div>
+    </div>
+  </div>
+  <footer>Built with plain HTML + Three.js CDN · hosted on GitHub Pages · <a href="../">mandeep0402.github.io</a></footer>
+</div>
+</body>
+</html>

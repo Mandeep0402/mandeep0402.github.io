@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Cube Smash 3D</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:#0d1410;color:#f1f5fd;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-user-select:none;user-select:none;touch-action:none;overscroll-behavior:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+  #hud{position:fixed;top:calc(12px + env(safe-area-inset-top));left:0;right:0;display:flex;justify-content:center;gap:10px;pointer-events:none;z-index:5}
+  .pill{background:rgba(10,20,14,.75);border:1px solid rgba(110,231,140,.4);border-radius:999px;padding:8px 16px;font-size:15px;font-weight:700}
+  .pill b{color:#6ee78c}
+  .pill.warn b{color:#ff6b6b}
+  #overlay{position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:24px;background:rgba(4,10,6,.72);backdrop-filter:blur(6px)}
+  #overlay.hide{display:none}
+  #overlay .box{width:min(100%,420px);text-align:center;background:#12231a;border:1px solid #24402f;border-radius:18px;padding:32px 26px}
+  #overlay h1{margin:0 0 8px;font-size:30px}
+  #overlay p{margin:0 0 8px;color:#93b3a0;font-size:15px;line-height:1.6}
+  #overlay .big{font-size:44px;font-weight:800;color:#6ee78c;margin:8px 0}
+  #startBtn{margin-top:16px;width:100%;height:54px;border:0;border-radius:12px;background:#6ee78c;color:#062a16;font-size:18px;font-weight:800;cursor:pointer}
+  #back{position:fixed;left:calc(12px + env(safe-area-inset-left));bottom:calc(12px + env(safe-area-inset-bottom));z-index:6;
+    padding:10px 16px;border-radius:999px;background:rgba(10,20,14,.75);border:1px solid #24402f;color:#93b3a0;text-decoration:none;font-size:13px;font-weight:600}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="hud">
+  <div class="pill">Score <b id="score">0</b></div>
+  <div class="pill">Time <b id="time">60</b></div>
+  <div class="pill">Lives <b id="lives">♥♥♥</b></div>
+</div>
+<div id="overlay">
+  <div class="box">
+    <h1>🔨 Cube Smash</h1>
+    <p>Tap the <b style="color:#6ee78c">green</b> cubes. Grab <b style="color:#ffd54a">gold</b> for +30.<br>
+    Never touch <b style="color:#ff6b6b">red</b> — it costs a life.<br>60 seconds. 3 lives. Go!</p>
+    <div class="big" id="finalScore" style="display:none">0</div>
+    <p id="best" style="display:none"></p>
+    <button id="startBtn">Start</button>
+  </div>
+</div>
+<a id="back" href="../">← Games</a>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const rand=(a=1,b)=>b===undefined?Math.random()*a:a+Math.random()*(b-a);
+
+const SFX={
+  ctx:null,
+  ensure(){if(!this.ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;try{this.ctx=new C();}catch(e){return;}}if(this.ctx.state==='suspended')this.ctx.resume().catch(()=>{});},
+  tone(f,d=0.1,g=0.22,type='triangle',slide=null){if(!this.ctx)return;const c=this.ctx,t=c.currentTime;
+    const o=c.createOscillator(),gn=c.createGain();o.type=type;o.frequency.setValueAtTime(f,t);
+    if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(20,slide),t+d);
+    gn.gain.setValueAtTime(0.0001,t);gn.gain.exponentialRampToValueAtTime(g,t+0.01);gn.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(gn);gn.connect(c.destination);o.start(t);o.stop(t+d+0.05);},
+  smack(){this.tone(700,0.07,0.25,'square',200);},
+  gold(){this.tone(880,0.09,0.22,'triangle');setTimeout(()=>this.tone(1320,0.14,0.22,'triangle'),70);},
+  bad(){this.tone(150,0.3,0.35,'sawtooth',50);},
+  over(){[500,400,300,200].forEach((f,i)=>setTimeout(()=>this.tone(f,0.18,0.22,'triangle'),i*150));}
+};
+
+const canvas=document.getElementById('gl');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x0d1410);
+scene.fog=new THREE.Fog(0x0d1410,14,30);
+const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,0.1,100);
+camera.position.set(0,6.4,6.8);camera.lookAt(0,0,-0.5);
+
+scene.add(new THREE.HemisphereLight(0xd8ffe2,0x0a140e,0.9));
+const sun=new THREE.DirectionalLight(0xffffff,1.5);sun.position.set(4,9,5);sun.castShadow=true;scene.add(sun);
+
+const board=new THREE.Mesh(new THREE.BoxGeometry(7.4,0.4,7.4),
+  new THREE.MeshStandardMaterial({color:0x1a2f22,roughness:0.8}));
+board.position.y=-0.2;board.receiveShadow=true;scene.add(board);
+
+// 3x3 holes
+const holes=[];
+const holeGeo=new THREE.CylinderGeometry(0.62,0.62,0.1,24);
+const holeMat=new THREE.MeshStandardMaterial({color:0x050805,roughness:1});
+const goodMat=new THREE.MeshStandardMaterial({color:0x2fd35f,emissive:0x0a5a22,emissiveIntensity:0.7,roughness:0.35});
+const goldMat=new THREE.MeshStandardMaterial({color:0xffd54a,emissive:0x8a6300,emissiveIntensity:0.9,roughness:0.3});
+const badMat=new THREE.MeshStandardMaterial({color:0xff4444,emissive:0x7a0a0a,emissiveIntensity:0.8,roughness:0.35});
+const cubeGeo=new THREE.BoxGeometry(0.95,0.95,0.95);
+
+for(let ix=0;ix<3;ix++)for(let iz=0;iz<3;iz++){
+  const x=(ix-1)*2.2,z=(iz-1)*2.2-0.5;
+  const hole=new THREE.Mesh(holeGeo,holeMat);hole.position.set(x,0.02,z);scene.add(hole);
+  holes.push({x,z,cube:null,t:0,state:'empty',kind:'good',cool:rand(0,1)});
+}
+
+let score=0,lives=3,timeLeft=60,running=false,combo=0,elapsed=0,lastT=0;
+let best=+(localStorage.getItem('cubeSmashBest')||0);
+const scoreEl=document.getElementById('score'),timeEl=document.getElementById('time'),livesEl=document.getElementById('lives'),
+      overlay=document.getElementById('overlay'),startBtn=document.getElementById('startBtn'),
+      finalScore=document.getElementById('finalScore'),bestEl=document.getElementById('best');
+
+function hud(){
+  scoreEl.textContent=score;
+  timeEl.textContent=Math.ceil(timeLeft);
+  livesEl.textContent='♥'.repeat(Math.max(0,lives))+'♡'.repeat(Math.max(0,3-lives));
+}
+function reset(){
+  for(const h of holes){if(h.cube){scene.remove(h.cube);h.cube=null;}h.state='empty';h.t=0;h.cool=rand(0,0.8);}
+  score=0;lives=3;timeLeft=60;combo=0;elapsed=0;hud();
+}
+function gameOver(){
+  running=false;SFX.over();
+  best=Math.max(best,score);localStorage.setItem('cubeSmashBest',best);
+  finalScore.style.display='block';finalScore.textContent=score+' pts';
+  bestEl.style.display='block';bestEl.textContent='Best: '+best+' pts';
+  startBtn.textContent='Smash again';overlay.classList.remove('hide');
+}
+startBtn.addEventListener('click',()=>{SFX.ensure();reset();running=true;lastT=performance.now()/1000;overlay.classList.add('hide');});
+
+function popCube(h){
+  const roll=Math.random();
+  const kind=roll<0.12?'gold':roll<0.30?'bad':'good';
+  const mat=kind==='gold'?goldMat:kind==='bad'?badMat:goodMat;
+  const m=new THREE.Mesh(cubeGeo,mat);
+  m.position.set(h.x,0.1,h.z);m.scale.set(1,0.05,1);m.castShadow=true;
+  m.userData.kind=kind;
+  scene.add(m);h.cube=m;h.state='up';h.t=0;h.kind=kind;
+}
+
+// tap detection
+const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();
+canvas.addEventListener('pointerdown',e=>{
+  SFX.ensure();
+  if(!running)return;
+  ptr.x=(e.clientX/innerWidth)*2-1;ptr.y=-(e.clientY/innerHeight)*2+1;
+  ray.setFromCamera(ptr,camera);
+  const cubes=holes.filter(h=>h.cube).map(h=>h.cube);
+  const hits=ray.intersectObjects(cubes,false);
+  if(hits.length){
+    const m=hits[0].object;
+    const h=holes.find(h=>h.cube===m);
+    const kind=m.userData.kind;
+    if(kind==='bad'){
+      lives--;combo=0;SFX.bad();
+      m.scale.set(1.3,0.15,1.3);
+    }else if(kind==='gold'){
+      score+=30;combo++;SFX.gold();m.scale.set(1.3,0.15,1.3);
+    }else{
+      score+=10+(combo>=4?5:0);combo++;SFX.smack();m.scale.set(1.3,0.15,1.3);
+    }
+    h.state='smashed';h.t=0;hud();
+    if(lives<=0)gameOver();
+  }else{
+    combo=0; // whiff breaks combo
+  }
+});
+
+function frame(){
+  requestAnimationFrame(frame);
+  const t=performance.now()/1000;
+  let dt=Math.min(0.05,t-(lastT||t));lastT=t;
+  if(document.hidden)dt=0;
+  if(running&&dt>0){
+    elapsed+=dt;timeLeft-=dt;
+    if(timeLeft<=0){timeLeft=0;hud();gameOver();}
+    const upTime=Math.max(0.55,1.1-elapsed*0.012);
+    for(const h of holes){
+      h.t+=dt;
+      if(h.state==='empty'){
+        h.cool-=dt;
+        if(h.cool<=0&&Math.random()<0.03+elapsed*0.0004)popCube(h);
+      }else if(h.state==='up'){
+        // rise
+        const k=Math.min(1,h.t*6);
+        if(h.cube)h.cube.scale.y=0.05+0.95*k;
+        if(h.cube&&(h.kind==='gold'))h.cube.rotation.y+=dt*2;
+        if(h.t>upTime){ // retreat (missed good = combo reset)
+          h.state='down';h.t=0;
+          if(h.kind==='good')combo=0;
+        }
+      }else if(h.state==='down'||h.state==='smashed'){
+        if(h.cube)h.cube.scale.y=Math.max(0.02,h.cube.scale.y-dt*6);
+        const wait=h.state==='smashed'?0.18:0.25;
+        if(h.t>wait){
+          if(h.cube){scene.remove(h.cube);h.cube=null;}
+          h.state='empty';h.t=0;h.cool=rand(0.2,Math.max(0.3,1.4-elapsed*0.015));
+        }
+      }
+    }
+    // urgency: pulse timer red under 10s
+    timeEl.parentElement.classList.toggle('warn',timeLeft<10);
+    hud();
+  }
+  renderer.render(scene,camera);
+}
+function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);}
+addEventListener('resize',resize);resize();hud();frame();
+</script>
+</body>
+</html>
